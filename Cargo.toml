@@ -1,0 +1,24 @@
+[package]
+name = "librgbmatrix-sys"
+version = "0.1.0"
+authors = ["polyfloyd <floyd@polyfloyd.net>"]
+readme = "README.md"
+edition = "2018"
+license = "GPL-2.0"
+repository = "https://github.com/polyfloyd/librgbmatrix-sys"
+description = "System crate for Hzeller's rpi-rgb-led-matrix C-library"
+keywords = ["rpi-rgb-led-matrix", "hub75", "raspberry-pi"]
+include = [
+    "Cargo.toml",
+    "LICENSE",
+    "README.md",
+    "build.rs",
+    "src/**/*.rs",
+    "vendor",
+]
+
+[dependencies]
+
+[build-dependencies]
+cc = "1"
+bindgen = "0.53"
