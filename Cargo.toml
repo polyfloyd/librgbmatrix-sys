@@ -1,6 +1,6 @@
 [package]
 name = "librgbmatrix-sys"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["polyfloyd <floyd@polyfloyd.net>"]
 readme = "README.md"
 edition = "2018"
@@ -14,7 +14,8 @@ include = [
     "README.md",
     "build.rs",
     "src/**/*.rs",
-    "vendor",
+    "vendor/**/*.cc",
+    "vendor/**/*.h",
 ]
 
 [dependencies]
