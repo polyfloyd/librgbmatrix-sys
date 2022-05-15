@@ -1,11 +1,9 @@
-use bindgen;
-use cc;
 use std::env;
 use std::fs;
 use std::path::Path;
 
 fn main() {
-    let out_dir = env::var("OUT_DIR").unwrap().to_string();
+    let out_dir = env::var("OUT_DIR").unwrap();
     let lib_dir = "./vendor";
 
     // Find the source files we need to build and sort them by C and C++.
