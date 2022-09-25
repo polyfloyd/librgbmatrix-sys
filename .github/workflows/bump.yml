@@ -1,0 +1,32 @@
+name: Bump
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - vendor/**
+
+jobs:
+
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  bump:
+    runs-on: ubuntu-latest
+
+    needs:
+      - ci
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        ssh-key: "${{ secrets.DEPLOY_SSH_KEY }}"
+
+    - run: echo NEW_VERSION=$(git describe --tags | python -c 'import sys; a=sys.stdin.read().strip("v\n").split("."); a[1]=str(int(a[1])+1); print(".".join(a))') >> $GITHUB_ENV
+    - run: sed -i 's/^version =.\+$/version = "${{ env.NEW_VERSION }}"/' Cargo.toml
+    - run: git commit -am "Version $(newversion)"
+    - run: git tag v$(newversion)
+    - run: git push
+    - run: git push --tags
