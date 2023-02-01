@@ -5,7 +5,9 @@ on:
     branches:
       - main
     paths:
+      - .gitmodules
       - vendor/**
+  workflow_dispatch:
 
 jobs:
 
@@ -24,9 +26,12 @@ jobs:
         fetch-depth: 0
         ssh-key: "${{ secrets.DEPLOY_SSH_KEY }}"
 
-    - run: echo NEW_VERSION=$(git describe --tags | python -c 'import sys; a=sys.stdin.read().strip("v\n").split("."); a[1]=str(int(a[1])+1); print(".".join(a))') >> $GITHUB_ENV
+    - run: git config --local user.email "github-actions@users.noreply.github.com"
+    - run: git config --local user.name "github-actions"
+
+    - run: echo NEW_VERSION=$(git describe --tags --abbrev=0 | python -c 'import sys; a=sys.stdin.read().strip("v\n").split("."); a[1]=str(int(a[1])+1); print(".".join(a))') >> $GITHUB_ENV
     - run: sed -i 's/^version =.\+$/version = "${{ env.NEW_VERSION }}"/' Cargo.toml
-    - run: git commit -am "Version $(newversion)"
-    - run: git tag v$(newversion)
+    - run: git commit -am "Version ${{ env.NEW_VERSION }}"
+    - run: git tag "v${{ env.NEW_VERSION }}"
     - run: git push
     - run: git push --tags
