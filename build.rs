@@ -22,33 +22,15 @@ fn main() {
     // Build a dummy library so the C files are compiled to objects, we need to link with these in
     // the final build.
     cc::Build::new()
+        .cpp(true)
         .warnings(false)
+        .flag("-fno-exceptions")
         .define("DEFAULT_HARDWARE", "\"regular\"")
         .include(format!("{}/lib", lib_dir))
         .include(format!("{}/include", lib_dir))
         .files(&cfiles)
-        .compile("dummy-lib-so-i-can-get-the-obj-files");
-    let ofiles = cfiles.iter().map(|cfile| {
-        format!(
-            "{}/vendor/lib/{}.o",
-            out_dir,
-            cfile.file_stem().and_then(|s| s.to_str()).unwrap()
-        )
-    });
-
-    // Final build of the static library with all object files.
-    let mut build = cc::Build::new();
-    build
-        .cpp(true)
-        .warnings(false)
-        .flag("-fno-exceptions")
-        .include(format!("{}/lib", lib_dir))
-        .include(format!("{}/include", lib_dir))
-        .files(cxxfiles);
-    for ofile in ofiles {
-        build.object(ofile);
-    }
-    build.compile("librgbmatrix.a");
+        .files(&cxxfiles)
+        .compile("librgbmatrix.a");
 
     bindgen::builder()
         .header(format!("{}/include/led-matrix-c.h", lib_dir))
